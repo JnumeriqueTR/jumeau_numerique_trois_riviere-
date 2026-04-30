@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jumeau Numérique Urbain — Équipe 5 · GEI1075 · UQTR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c0:#020d1a;--c1:#041225;--c2:#0a1e35;
+  --neon:#00d4ff;--neon2:#00ff9d;--neon3:#7b2fff;--neon4:#ff6b35;
+  --grid:rgba(0,212,255,0.06);
+  --text:#c8e8f5;--muted:rgba(200,232,245,0.5);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Rajdhani',sans-serif;background:var(--c0);color:var(--text);}
+
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:48px 48px;}
+.grid-bg::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(0,212,255,0.08) 0%,transparent 70%);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;
+  justify-content:space-between;padding:16px 48px;
+  border-bottom:1px solid rgba(0,212,255,0.15);
+  background:rgba(2,13,26,0.95);backdrop-filter:blur(10px);flex-wrap:wrap;gap:10px;}
+.nav-logo{font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:.15em;color:var(--neon);}
+.nav-logo span{color:var(--text);opacity:.6;margin-right:8px;}
+.nav-links{display:flex;gap:28px;}
+.nav-links a{font-size:12px;font-weight:500;letter-spacing:.1em;color:var(--muted);
+  text-decoration:none;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--neon);}
+.nav-badge{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--neon);
+  border:1px solid rgba(0,212,255,0.4);padding:4px 12px;border-radius:2px;background:rgba(0,212,255,0.06);}
+
+.hero{position:relative;z-index:1;padding:140px 48px 80px;text-align:center;overflow:hidden;}
+.hero-tag{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.25em;color:var(--neon);
+  text-transform:uppercase;margin-bottom:20px;display:inline-flex;align-items:center;gap:10px;}
+.hero-tag::before,.hero-tag::after{content:'';display:inline-block;width:32px;height:1px;background:var(--neon);opacity:.6;}
+.hero h1{font-size:clamp(38px,6.5vw,74px);font-weight:700;line-height:1.05;margin-bottom:8px;color:#e8f6ff;}
+.hero h1 .a1{color:var(--neon);}.hero h1 .a2{color:var(--neon2);}
+.hero-sub{font-size:15px;font-weight:300;color:var(--muted);letter-spacing:.25em;text-transform:uppercase;margin-bottom:24px;}
+.hero-scope{display:inline-flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;
+  font-size:12px;color:var(--neon2);border:1px solid rgba(0,255,157,.25);padding:6px 16px;border-radius:2px;
+  background:rgba(0,255,157,.05);margin-bottom:36px;}
+.hero-desc{max-width:640px;margin:0 auto 40px;font-size:16px;line-height:1.7;color:rgba(200,232,245,.72);font-weight:300;}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-p{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  padding:13px 28px;border-radius:2px;background:var(--neon);color:var(--c0);border:none;cursor:pointer;
+  font-weight:700;transition:opacity .2s,transform .15s;text-decoration:none;display:inline-block;}
+.btn-p:hover{opacity:.85;transform:translateY(-1px);}
+.btn-g{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  padding:13px 28px;border-radius:2px;background:transparent;color:var(--neon);
+  border:1px solid rgba(0,212,255,.4);cursor:pointer;transition:background .2s;text-decoration:none;display:inline-block;}
+.btn-g:hover{background:rgba(0,212,255,.08);}
+
+.stats-band{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  border-top:1px solid rgba(0,212,255,.12);border-bottom:1px solid rgba(0,212,255,.12);background:rgba(0,212,255,.03);}
+.stat-item{padding:24px 20px;text-align:center;border-right:1px solid rgba(0,212,255,.08);}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Share Tech Mono',monospace;font-size:26px;color:var(--neon);display:block;margin-bottom:5px;}
+.stat-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+
+section{position:relative;z-index:1;padding:72px 48px;}
+.section-tag{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.25em;color:var(--neon);
+  text-transform:uppercase;margin-bottom:10px;display:block;}
+.section-title{font-size:clamp(26px,3.5vw,40px);font-weight:700;line-height:1.1;margin-bottom:14px;color:#e8f6ff;}
+.section-desc{font-size:15px;font-weight:300;color:rgba(200,232,245,.65);line-height:1.7;max-width:540px;margin-bottom:44px;}
+
+/* STATUS BADGES */
+.status-done{font-family:'Share Tech Mono',monospace;font-size:10px;padding:3px 10px;border-radius:2px;
+  background:rgba(0,255,157,.1);color:var(--neon2);border:1px solid rgba(0,255,157,.3);}
+.status-wip{font-family:'Share Tech Mono',monospace;font-size:10px;padding:3px 10px;border-radius:2px;
+  background:rgba(0,212,255,.08);color:var(--neon);border:1px solid rgba(0,212,255,.25);}
+
+/* SUBSYSTEMS */
+.subsys-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;
+  background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.1);}
+.subsys-card{background:var(--c1);padding:28px 24px;position:relative;overflow:hidden;transition:background .2s;}
+.subsys-card:hover{background:var(--c2);}
+.subsys-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+.sc-cyan::before{background:var(--neon);}
+.sc-green::before{background:var(--neon2);}
+.sc-purple::before{background:var(--neon3);}
+.sc-orange::before{background:var(--neon4);}
+.ss-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.ss-code{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;}
+.sc-cyan .ss-code{color:var(--neon);}
+.sc-green .ss-code{color:var(--neon2);}
+.sc-purple .ss-code{color:var(--neon3);}
+.sc-orange .ss-code{color:var(--neon4);}
+.ss-title{font-size:17px;font-weight:700;color:#e8f6ff;margin-bottom:6px;}
+.ss-resp{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:.06em;}
+.ss-text{font-size:13px;line-height:1.6;color:rgba(200,232,245,.6);font-weight:300;}
+.ss-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;}
+.tool-tag{font-family:'Share Tech Mono',monospace;font-size:10px;padding:3px 8px;
+  border-radius:2px;border:1px solid rgba(0,212,255,.2);color:var(--neon);background:rgba(0,212,255,.05);}
+.sc-green .tool-tag{color:var(--neon2);border-color:rgba(0,255,157,.2);background:rgba(0,255,157,.05);}
+.sc-purple .tool-tag{color:var(--neon3);border-color:rgba(123,47,255,.2);background:rgba(123,47,255,.05);}
+.sc-orange .tool-tag{color:var(--neon4);border-color:rgba(255,107,53,.2);background:rgba(255,107,53,.05);}
+
+/* DEMO SECTION */
+.demo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
+.demo-card{border:1px solid rgba(0,212,255,.15);background:var(--c1);overflow:hidden;transition:border-color .2s;}
+.demo-card:hover{border-color:rgba(0,212,255,.4);}
+.demo-screen{width:100%;height:200px;background:var(--c2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;border-bottom:1px solid rgba(0,212,255,.1);}
+.demo-screen-sumo{background:linear-gradient(135deg,#020d1a 0%,#041f10 100%);}
+.demo-screen-simulink{background:linear-gradient(135deg,#020d1a 0%,#10041f 100%);}
+.demo-screen-unity{background:linear-gradient(135deg,#020d1a 0%,#1a0a04 100%);}
+.demo-screen-link{background:linear-gradient(135deg,#020d1a 0%,#041225 100%);}
+.demo-placeholder{font-family:'Share Tech Mono',monospace;font-size:11px;
+  color:rgba(0,212,255,.4);letter-spacing:.15em;text-align:center;padding:20px;}
+.demo-upload-hint{font-size:11px;color:rgba(0,212,255,.3);margin-top:8px;font-family:'Share Tech Mono',monospace;}
+
+/* Animated grid for demo placeholders */
+.anim-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,212,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.04) 1px,transparent 1px);
+  background-size:24px 24px;}
+.demo-icon{font-size:36px;position:relative;z-index:1;margin-bottom:10px;opacity:.6;}
+.demo-label-overlay{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;
+  background:linear-gradient(transparent,rgba(2,13,26,.8));
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--neon);letter-spacing:.15em;}
+/* Road grid animation */
+.road-anim{position:absolute;inset:0;}
+.road-h{position:absolute;left:0;right:0;height:1px;background:rgba(0,212,255,.15);}
+.road-v{position:absolute;top:0;bottom:0;width:1px;background:rgba(0,212,255,.15);}
+.car-dot{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--neon2);
+  box-shadow:0 0 6px var(--neon2);animation:moveCar 3s linear infinite;}
+.car-dot2{animation-delay:-1s;background:var(--neon);box-shadow:0 0 6px var(--neon);}
+.car-dot3{animation-delay:-2s;background:var(--neon4);box-shadow:0 0 6px var(--neon4);}
+@keyframes moveCar{0%{transform:translateX(-20px)}100%{transform:translateX(320px)}}
+/* Energy wave */
+.energy-wave{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.wave-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--neon3),transparent);
+  animation:wavePulse 2s ease-in-out infinite;}
+.wave-line:nth-child(2){animation-delay:.5s;opacity:.6;transform:translateY(20px);}
+.wave-line:nth-child(3){animation-delay:1s;opacity:.4;transform:translateY(-20px);}
+@keyframes wavePulse{0%,100%{opacity:.3;transform:scaleX(.8) translateY(0)}50%{opacity:1;transform:scaleX(1) translateY(0)}}
+/* Unity 3D dots */
+.city-dots{position:absolute;inset:0;}
+.city-dot{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--neon4);
+  animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+
+.demo-info{padding:18px 20px;}
+.demo-sys-name{font-size:15px;font-weight:700;color:#e8f6ff;margin-bottom:6px;}
+.demo-sys-status{font-size:13px;color:rgba(200,232,245,.6);font-weight:300;line-height:1.5;}
+
+/* INTEGRATION STATUS */
+.integration-box{border:1px solid rgba(0,255,157,.2);background:rgba(0,255,157,.04);padding:32px;
+  display:flex;align-items:center;gap:32px;flex-wrap:wrap;}
+.int-badge{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--neon2);
+  border:1px solid rgba(0,255,157,.4);padding:10px 20px;border-radius:2px;
+  background:rgba(0,255,157,.08);white-space:nowrap;}
+.int-arrow{font-family:'Share Tech Mono',monospace;font-size:18px;color:rgba(0,255,157,.4);}
+.int-note{font-size:14px;color:rgba(200,232,245,.6);font-weight:300;line-height:1.6;max-width:400px;}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:20px;}
+.team-card{border:1px solid rgba(0,212,255,.12);padding:22px;background:rgba(0,212,255,.02);transition:border-color .2s;}
+.team-card:hover{border-color:rgba(0,212,255,.35);}
+.team-avatar{width:44px;height:44px;border-radius:50%;background:rgba(0,212,255,.1);
+  border:1px solid rgba(0,212,255,.3);display:flex;align-items:center;justify-content:center;
+  font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--neon);margin-bottom:14px;}
+.team-name{font-size:14px;font-weight:700;color:#e8f6ff;margin-bottom:3px;}
+.team-role{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--neon);margin-bottom:6px;}
+.team-task{font-size:12px;color:var(--muted);font-weight:300;line-height:1.5;}
+
+/* VIDEO SECTION */
+.video-section-title{
+  display:flex;align-items:center;gap:16px;margin-bottom:40px;flex-wrap:wrap;
+}
+.videos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px;margin-bottom:48px;}
+.video-card{border:1px solid rgba(0,212,255,.15);background:var(--c1);overflow:hidden;transition:border-color .2s;}
+.video-card:hover{border-color:rgba(0,212,255,.4);}
+.video-card.featured{grid-column:1/-1;}
+.video-wrapper{position:relative;width:100%;background:var(--c0);}
+.video-wrapper video{width:100%;display:block;max-height:420px;object-fit:cover;}
+.video-placeholder{
+  width:100%;aspect-ratio:16/9;background:var(--c0);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  border-bottom:1px solid rgba(0,212,255,.1);position:relative;overflow:hidden;
+  cursor:pointer;
+}
+.video-placeholder .anim-grid{position:absolute;inset:0;}
+.vp-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.play-btn{
+  width:56px;height:56px;border-radius:50%;
+  border:2px solid rgba(0,212,255,.5);
+  background:rgba(0,212,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,border-color .2s;
+}
+.video-card:hover .play-btn{background:rgba(0,212,255,.18);border-color:var(--neon);}
+.play-icon{
+  width:0;height:0;
+  border-top:10px solid transparent;
+  border-bottom:10px solid transparent;
+  border-left:18px solid var(--neon);
+  margin-left:4px;
+}
+.vp-label{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.2em;color:rgba(0,212,255,.5);}
+.vp-hint{font-size:12px;color:rgba(200,232,245,.3);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em;}
+.video-overlay-label{
+  position:absolute;bottom:0;left:0;right:0;padding:8px 14px;
+  background:linear-gradient(transparent,rgba(2,13,26,.85));
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--neon);letter-spacing:.15em;
+}
+.video-info{padding:16px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.video-meta{}
+.video-title{font-size:15px;font-weight:700;color:#e8f6ff;margin-bottom:4px;}
+.video-desc{font-size:13px;color:rgba(200,232,245,.6);font-weight:300;line-height:1.5;}
+.video-badge{
+  font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 10px;border-radius:2px;
+  white-space:nowrap;align-self:flex-start;margin-top:2px;
+}
+.vb-cyan{color:var(--neon);border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.06);}
+.vb-green{color:var(--neon2);border:1px solid rgba(0,255,157,.3);background:rgba(0,255,157,.06);}
+.vb-orange{color:var(--neon4);border:1px solid rgba(255,107,53,.3);background:rgba(255,107,53,.06);}
+.vb-purple{color:var(--neon3);border:1px solid rgba(123,47,255,.3);background:rgba(123,47,255,.06);}
+
+/* add-video instructions box */
+.add-video-box{
+  border:1px dashed rgba(0,212,255,.2);padding:24px 28px;
+  background:rgba(0,212,255,.02);margin-top:12px;
+}
+.add-video-box h3{font-size:14px;font-weight:700;color:#e8f6ff;margin-bottom:16px;
+  font-family:'Share Tech Mono',monospace;letter-spacing:.1em;}
+.code-block{
+  background:rgba(0,0,0,.4);border:1px solid rgba(0,212,255,.12);
+  padding:14px 16px;font-family:'Share Tech Mono',monospace;
+  font-size:12px;color:var(--neon2);line-height:1.8;overflow-x:auto;
+  margin-bottom:12px;
+}
+.code-comment{color:rgba(0,212,255,.4);}
+.add-note{font-size:13px;color:var(--muted);font-weight:300;line-height:1.6;}
+
+/* CONTACT */
+.contact-box{border:1px solid rgba(0,212,255,.2);padding:48px;text-align:center;
+  background:rgba(0,212,255,.03);position:relative;overflow:hidden;}
+.contact-box::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:300px;height:120px;background:radial-gradient(ellipse,rgba(0,212,255,.1) 0%,transparent 70%);}
+.contact-label{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.3em;
+  color:var(--neon);text-transform:uppercase;margin-bottom:12px;display:block;}
+.prof-names{font-size:15px;color:var(--neon2);font-family:'Share Tech Mono',monospace;
+  letter-spacing:.06em;margin-bottom:16px;display:block;}
+.affil{font-size:14px;color:var(--muted);font-weight:300;line-height:1.8;}
+
+footer{position:relative;z-index:1;padding:22px 48px;
+  border-top:1px solid rgba(0,212,255,.1);display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:12px;background:rgba(2,13,26,.95);}
+.footer-copy{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--neon);}
+hr.div{border:none;border-top:1px solid rgba(0,212,255,.08);margin:0;}
+
+@media(max-width:640px){
+  nav,section,.hero,footer{padding-left:20px;padding-right:20px;}
+  .nav-links{display:none;}
+  .stats-band .stat-item{border-right:none;border-bottom:1px solid rgba(0,212,255,.08);}
+  .contact-box{padding:32px 20px;}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>//</span>JUMEAU NUMÉRIQUE URBAIN</div>
+  <div class="nav-links">
+    <a href="#systemes">Sous-systèmes</a>
+    <a href="#demo">Démo</a>
+    <a href="#equipe">Équipe</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-badge">GEI1075 · UQTR · 2025–2026</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Génie Électrique &amp; Informatique — Équipe 5</div>
+  <h1><span class="a1">Jumeau</span> Numérique<br><span class="a2">Multi-Domaines</span></h1>
+  <p class="hero-sub">Trafic · Énergie · IA · FPGA · Visualisation 3D</p>
+  <div class="hero-scope">[ PÉRIMÈTRE : Quartier intelligent ~1 km² · Temps réel ]</div>
+  <p class="hero-desc">
+    Plateforme intégrée de simulation et de contrôle en temps réel combinant la gestion du trafic routier, le micro-réseau électrique et les bornes de recharge pour véhicules électriques, pilotée par intelligence artificielle et accélérée sur FPGA.
+  </p>
+  <div class="hero-btns">
+    <a href="#demo" class="btn-p">Voir la démo</a>
+    <a href="#systemes" class="btn-g">Architecture du système</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">Sous-systèmes</span></div>
+  <div class="stat-item"><span class="stat-num">1 km²</span><span class="stat-label">Zone simulée</span></div>
+  <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">Membres d'équipe</span></div>
+  <div class="stat-item"><span class="stat-num">3</span><span class="stat-label">Modules reliés</span></div>
+  <div class="stat-item"><span class="stat-num">RT</span><span class="stat-label">Temps réel FPGA</span></div>
+</div>
+
+<!-- SUBSYSTEMS -->
+<section id="systemes">
+  <span class="section-tag">// architecture système</span>
+  <h2 class="section-title">Sous-systèmes &amp; responsables</h2>
+  <p class="section-desc">Six composantes interconnectées formant le cœur du jumeau numérique. SUMO, Simulink et Unity sont désormais reliés et opérationnels.</p>
+  <div class="subsys-grid">
+    <div class="subsys-card sc-cyan">
+      <div class="ss-header"><span class="ss-code">[ SYS_01 · TRAFIC ]</span><span class="status-done">✓ RELIÉ</span></div>
+      <div class="ss-title">Simulation du trafic routier</div>
+      <div class="ss-resp">Marème Hanne Bathily</div>
+      <p class="ss-text">Modélisation et simulation du réseau routier, génération de flux de véhicules et évaluation de l'impact des décisions sur la fluidité urbaine.</p>
+      <div class="ss-tools"><span class="tool-tag">SUMO</span><span class="tool-tag">OSM</span><span class="tool-tag">Python</span></div>
+    </div>
+    <div class="subsys-card sc-green">
+      <div class="ss-header"><span class="ss-code">[ SYS_02 · ÉNERGIE ]</span><span class="status-done">✓ RELIÉ</span></div>
+      <div class="ss-title">Micro-réseau électrique</div>
+      <div class="ss-resp">Enoch Mugisha</div>
+      <p class="ss-text">Modélisation du comportement du micro-réseau et simulation des échanges énergétiques entre composants solaires, batteries et consommateurs.</p>
+      <div class="ss-tools"><span class="tool-tag">MATLAB</span><span class="tool-tag">Simulink</span></div>
+    </div>
+    <div class="subsys-card sc-orange">
+      <div class="ss-header"><span class="ss-code">[ SYS_03 · BORNES EV ]</span><span class="status-wip">EN COURS</span></div>
+      <div class="ss-title">Bornes de recharge VE</div>
+      <div class="ss-resp">Abdoul Nasser Adamou Soumana</div>
+      <p class="ss-text">Modélisation électrique des bornes de recharge, analyse de l'impact sur le réseau et stratégies V2G (injection en pointe, recharge décalée).</p>
+      <div class="ss-tools"><span class="tool-tag">Simulink</span><span class="tool-tag">V2G</span></div>
+    </div>
+    <div class="subsys-card sc-purple">
+      <div class="ss-header"><span class="ss-code">[ SYS_04 · FPGA ] · Chef de projet</span><span class="status-wip">EN COURS</span></div>
+      <div class="ss-title">Accélérateur FPGA temps réel</div>
+      <div class="ss-resp">Darryl Uriel Djougla Djoko</div>
+      <p class="ss-text">Simulation temps réel des bornes sur FPGA, co-simulation et coordination globale du jumeau numérique. Exécution déterministe proche du système réel.</p>
+      <div class="ss-tools"><span class="tool-tag">eHS</span><span class="tool-tag">Model Composer</span></div>
+    </div>
+    <div class="subsys-card sc-cyan">
+      <div class="ss-header"><span class="ss-code">[ SYS_05 · IA ]</span><span class="status-wip">EN COURS</span></div>
+      <div class="ss-title">Intelligence artificielle de contrôle</div>
+      <div class="ss-resp">Onifère Ouattara</div>
+      <p class="ss-text">Optimisation de la prise de décision dans le trafic et la gestion énergétique via apprentissage par renforcement pour un contrôle adaptatif en temps réel.</p>
+      <div class="ss-tools"><span class="tool-tag">Python</span><span class="tool-tag">RL</span></div>
+    </div>
+    <div class="subsys-card sc-green">
+      <div class="ss-header"><span class="ss-code">[ SYS_06 · 3D ]</span><span class="status-done">✓ RELIÉ</span></div>
+      <div class="ss-title">Interface de visualisation 3D</div>
+      <div class="ss-resp">Ornela Domen Tchuisseu</div>
+      <p class="ss-text">Interface 3D immersive pour la visualisation en temps réel des flux de trafic, d'énergie et des décisions IA dans un environnement urbain interactif.</p>
+      <div class="ss-tools"><span class="tool-tag">Unity</span><span class="tool-tag">Blender</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- DEMO / VIDEOS -->
+<section id="demo">
+  <span class="section-tag">// démonstration vidéo</span>
+  <h2 class="section-title">Vidéos du système</h2>
+  <p class="section-desc">Quatre emplacements vidéo prêts à l'emploi — ajoutez vos fichiers MP4 dans le repo et mettez à jour les chemins ci-dessous.</p>
+
+  <!-- Integration status -->
+  <div class="integration-box" style="margin-bottom:40px;">
+    <span class="int-badge">SUMO</span>
+    <span class="int-arrow">—→</span>
+    <span class="int-badge">SIMULINK</span>
+    <span class="int-arrow">—→</span>
+    <span class="int-badge">UNITY 3D</span>
+    <p class="int-note">Les trois modules principaux échangent des données en temps réel : SUMO fournit les positions de véhicules, Simulink gère les flux énergétiques, Unity les visualise en 3D.</p>
+  </div>
+
+  <div class="videos-grid">
+
+    <!-- VIDEO 1 : Intégration globale (featured) -->
+    <div class="video-card featured">
+      <div class="video-wrapper">
+        <!--
+          POUR AJOUTER VOTRE VIDÉO :
+          1. Mettez votre fichier dans le repo : videos/integration.mp4
+          2. Décommentez la balise <video> ci-dessous et commentez le .video-placeholder
+        -->
+        <!-- <video controls poster="videos/integration_poster.jpg">
+          <source src="videos/integration.mp4" type="video/mp4">
+        </video> -->
+        <div class="video-placeholder">
+          <div class="anim-grid"></div>
+          <div class="vp-inner">
+            <div class="play-btn"><div class="play-icon"></div></div>
+            <div class="vp-label">[ VIDEO_04 · INTÉGRATION COMPLÈTE ]</div>
+            <div class="vp-hint">→ videos/integration.mp4</div>
+          </div>
+          <div class="video-overlay-label">DÉMONSTRATION SYSTÈME INTÉGRÉ · SUMO + SIMULINK + UNITY</div>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-meta">
+          <div class="video-title">Vue d'ensemble — Jumeau numérique complet</div>
+          <div class="video-desc">Démonstration de l'intégration temps réel des trois sous-systèmes : trafic, énergie et visualisation 3D fonctionnant simultanément.</div>
+        </div>
+        <span class="video-badge vb-green">✓ SUMO + SIMULINK + UNITY</span>
+      </div>
+    </div>
+
+    <!-- VIDEO 2 : SUMO -->
+    <div class="video-card">
+      <div class="video-wrapper">
+        <!-- <video controls poster="videos/sumo_poster.jpg">
+          <source src="videos/sumo.mp4" type="video/mp4">
+        </video> -->
+        <div class="video-placeholder">
+          <div class="anim-grid"></div>
+          <div class="vp-inner">
+            <div class="play-btn"><div class="play-icon"></div></div>
+            <div class="vp-label">[ VIDEO_01 · TRAFIC SUMO ]</div>
+            <div class="vp-hint">→ videos/sumo.mp4</div>
+          </div>
+          <div class="video-overlay-label">SYS_01 · SIMULATION TRAFIC ROUTIER</div>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-meta">
+          <div class="video-title">Simulation du trafic — SUMO</div>
+          <div class="video-desc">Flux de véhicules, carrefours intelligents et métriques de fluidité sur le quartier modélisé en temps réel.</div>
+        </div>
+        <span class="video-badge vb-cyan">SYS_01</span>
+      </div>
+    </div>
+
+    <!-- VIDEO 3 : Simulink -->
+    <div class="video-card">
+      <div class="video-wrapper">
+        <!-- <video controls poster="videos/simulink_poster.jpg">
+          <source src="videos/simulink.mp4" type="video/mp4">
+        </video> -->
+        <div class="video-placeholder">
+          <div class="anim-grid"></div>
+          <div class="vp-inner">
+            <div class="play-btn"><div class="play-icon"></div></div>
+            <div class="vp-label">[ VIDEO_02 · MICRO-RÉSEAU ]</div>
+            <div class="vp-hint">→ videos/simulink.mp4</div>
+          </div>
+          <div class="video-overlay-label">SYS_02–03 · MICRO-RÉSEAU &amp; BORNES EV</div>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-meta">
+          <div class="video-title">Micro-réseau énergétique — Simulink</div>
+          <div class="video-desc">Échanges énergétiques entre panneaux solaires, batteries et bornes VE avec analyse des contraintes réseau.</div>
+        </div>
+        <span class="video-badge vb-purple">SYS_02–03</span>
+      </div>
+    </div>
+
+    <!-- VIDEO 4 : Unity -->
+    <div class="video-card">
+      <div class="video-wrapper">
+        <!-- <video controls poster="videos/unity_poster.jpg">
+          <source src="videos/unity.mp4" type="video/mp4">
+        </video> -->
+        <div class="video-placeholder">
+          <div class="anim-grid"></div>
+          <div class="vp-inner">
+            <div class="play-btn"><div class="play-icon"></div></div>
+            <div class="vp-label">[ VIDEO_03 · UNITY 3D ]</div>
+            <div class="vp-hint">→ videos/unity.mp4</div>
+          </div>
+          <div class="video-overlay-label">SYS_06 · VISUALISATION 3D TEMPS RÉEL</div>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-meta">
+          <div class="video-title">Interface 3D interactive — Unity</div>
+          <div class="video-desc">Représentation immersive du quartier intelligent : véhicules, flux énergétiques et décisions IA en 3D.</div>
+        </div>
+        <span class="video-badge vb-orange">SYS_06</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Instructions pour ajouter les vidéos -->
+  <div class="add-video-box">
+    <h3>// COMMENT AJOUTER VOS VIDÉOS</h3>
+    <div class="code-block"><span class="code-comment"># 1. Structure des fichiers dans votre repo</span>
+votre-repo/
+├── index.html
+└── videos/
+    ├── integration.mp4   <span class="code-comment">&lt;-- vidéo système complet</span>
+    ├── sumo.mp4           <span class="code-comment">&lt;-- vidéo trafic SUMO</span>
+    ├── simulink.mp4       <span class="code-comment">&lt;-- vidéo micro-réseau</span>
+    └── unity.mp4          <span class="code-comment">&lt;-- vidéo interface 3D</span></div>
+    <div class="code-block"><span class="code-comment"># 2. Dans index.html, pour chaque vidéo, décommentez :</span>
+&lt;video controls&gt;
+  &lt;source src="videos/sumo.mp4" type="video/mp4"&gt;
+&lt;/video&gt;
+<span class="code-comment"># Et commentez le bloc .video-placeholder correspondant</span></div>
+    <p class="add-note">⚠️ GitHub a une limite de 100 MB par fichier. Pour des vidéos plus lourdes, uploadez sur YouTube (non listé) et utilisez une balise <code style="color:var(--neon2)">&lt;iframe&gt;</code> à la place — demandez-moi et je mets à jour le code.</p>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- TEAM -->
+<section id="equipe">
+  <span class="section-tag">// équipe</span>
+  <h2 class="section-title">L'équipe no. 5</h2>
+  <p class="section-desc">Six étudiants en génie électrique et génie informatique à l'UQTR, encadrés par trois professeurs.</p>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-avatar">DD</div>
+      <div class="team-name">Darryl Uriel Djougla Djoko</div>
+      <div class="team-role">Chef de projet · FPGA</div>
+      <div class="team-task">Co-simulation temps réel, coordination du jumeau numérique, Model Composer/eHS</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">AN</div>
+      <div class="team-name">Abdoul Nasser Adamou Soumana</div>
+      <div class="team-role">Bornes EV</div>
+      <div class="team-task">Modélisation électrique bornes de recharge, stratégies V2G, Simulink</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">OD</div>
+      <div class="team-name">Ornela Domen Tchuisseu</div>
+      <div class="team-role">Interface 3D</div>
+      <div class="team-task">Visualisation interactive Unity/Blender, représentation temps réel des sous-systèmes</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">EM</div>
+      <div class="team-name">Enoch Mugisha</div>
+      <div class="team-role">Micro-réseau</div>
+      <div class="team-task">Modélisation énergétique MATLAB/Simulink, échanges entre composants du réseau</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">MH</div>
+      <div class="team-name">Marème Hanne Bathily</div>
+      <div class="team-role">Trafic routier</div>
+      <div class="team-task">Simulation réseau routier SUMO/OSM, scénarios de fluidité et d'optimisation</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">OO</div>
+      <div class="team-name">Onifère Ouattara</div>
+      <div class="team-role">IA de contrôle</div>
+      <div class="team-task">Apprentissage par renforcement, décisions adaptatives trafic &amp; énergie, Python</div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-box">
+    <span class="contact-label">// encadrement académique</span>
+    <span class="prof-names">Daniel Massicotte · Michel Lemaire · Simon Delisle</span>
+    <p class="affil">
+      Cours GEI1075 — Projets en Génie Électrique et Génie Informatique<br>
+      Université du Québec à Trois-Rivières<br>
+      3351, boul. des Forges, Trois-Rivières (Québec) G8Z 4M3
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2025–2026 ÉQUIPE NO.5 · GEI1075 · UQTR</div>
+  <div class="footer-links">
+    <a href="#systemes">Sous-systèmes</a>
+    <a href="#demo">Démo</a>
+    <a href="#equipe">Équipe</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+</body>
+</html>
